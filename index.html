@@ -36,7 +36,7 @@
       background: #004d40;
     }
     table {
-      margin: 0 auto;
+      margin: 20px auto;
       border-collapse: collapse;
       width: 80%;
       background: #ffffff;
@@ -78,7 +78,7 @@
     let competidores = [];
 
     function adicionarCompetidor() {
-      const nome = document.getElementById("nome").value;
+      const nome = document.getElementById("nome").value.trim();
       const tamanhos = document.getElementById("tamanhos").value
         .split(",")
         .map(t => parseInt(t.trim()))
@@ -87,7 +87,9 @@
       if (nome && tamanhos.length > 0) {
         competidores.push({ nome, tamanhos });
         document.getElementById("resultado").innerHTML =
-          "<p>Competidores adicionados:</p><pre>" + JSON.stringify(competidores, null, 2) + "</pre>";
+          "<p>Competidores adicionados:</p><ul>" +
+          competidores.map(c => `<li>${c.nome} (${c.tamanhos.join(", ")})</li>`).join("") +
+          "</ul>";
         document.getElementById("nome").value = "";
         document.getElementById("tamanhos").value = "";
       } else {
