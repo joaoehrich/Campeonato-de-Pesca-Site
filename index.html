@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Campeonato de Pesca</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #006064;
+    }
+    .form-container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #006064;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #004d40;
+    }
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 80%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #006064;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f1f1f1;
+    }
+    .trofeu {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #004d40;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 Campeonato de Pesca</h1>
+  <div class="form-container">
+    <h2>Adicionar Competidor</h2>
+    <input type="text" id="nome" placeholder="Nome do competidor">
+    <input type="text" id="tamanhos" placeholder="Tamanhos separados por vírgula">
+    <button onclick="adicionarCompetidor()">Adicionar</button>
+    <button onclick="enviar()">Enviar Competição</button>
+  </div>
+
+  <div id="resultado"></div>
+  <div class="trofeu" id="trofeu"></div>
+
+  <script>
+    let competidores = [];
+
+    function adicionarCompetidor() {
+      const nome = document.getElementById("nome").value;
+      const tamanhos = document.getElementById("tamanhos").value
+        .split(",")
+        .map(t => parseInt(t.trim()))
+        .filter(t => !isNaN(t));
+
+      if (nome && tamanhos.length > 0) {
+        competidores.push({ nome, tamanhos });
+        document.getElementById("resultado").innerHTML =
+          "<p>Competidores adicionados:</p><pre>" + JSON.stringify(competidores, null, 2) + "</pre>";
+        document.getElementById("nome").value = "";
+        document.getElementById("tamanhos").value = "";
+      } else {
+        alert("Preencha o nome e os tamanhos corretamente!");
+      }
+    }
+
+    async function enviar() {
+      const resp = await fetch("https://https://campeonato-de-pesca.onrender.com", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ competidores })
+      });
+      const data = await resp.json();
+
+      // Montar tabela de ranking
+      let tabela = "<table><tr><th>Posição</th><th>Nome</th><th>Total</th><th>Maior Peixe</th></tr>";
+      data.ranking.forEach((c, i) => {
+        tabela += `<tr><td>${i+1}</td><td>${c.nome}</td><td>${c.total}</td><td>${c.maior_peixe}</td></tr>`;
+      });
+      tabela += "</table>";
+
+      document.getElementById("resultado").innerHTML = tabela;
+      document.getElementById("trofeu").textContent =
+        `🏅 Troféu do maior peixe: ${data.peixe_trofeu.nome} (${data.peixe_trofeu.maior_peixe} cm)`;
+    }
+  </script>
+</body>
+</html>
