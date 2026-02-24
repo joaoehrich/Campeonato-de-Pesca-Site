@@ -6,19 +6,20 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #e0f7fa;
+      background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
       text-align: center;
       padding: 20px;
     }
     h1 {
       color: #006064;
+      text-shadow: 2px 2px #b2ebf2;
     }
     .form-container {
       background: #ffffff;
       padding: 20px;
       border-radius: 8px;
       display: inline-block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       margin-bottom: 20px;
     }
     input, button {
@@ -31,9 +32,11 @@
       background: #006064;
       color: white;
       cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
     }
     button:hover {
       background: #004d40;
+      transform: scale(1.05);
     }
     table {
       margin: 20px auto;
@@ -54,10 +57,26 @@
     tr:nth-child(even) {
       background: #f1f1f1;
     }
+    tr.gold td {
+      background: #ffd700;
+      font-weight: bold;
+    }
+    tr.silver td {
+      background: #c0c0c0;
+      font-weight: bold;
+    }
+    tr.bronze td {
+      background: #cd7f32;
+      font-weight: bold;
+    }
     .trofeu {
       margin-top: 20px;
       font-weight: bold;
       color: #004d40;
+      font-size: 1.2em;
+      border: 2px dashed #006064;
+      padding: 10px;
+      display: inline-block;
     }
   </style>
 </head>
@@ -98,17 +117,22 @@
     }
 
     async function enviar() {
-      const resp = await fetch("https://https://campeonato-de-pesca.onrender.com", {
+      const resp = await fetch("https://campeonato-de-pesca.onrender.com/competicao", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ competidores })
       });
       const data = await resp.json();
 
-      // Montar tabela de ranking
+      // Montar tabela de ranking com medalhas
       let tabela = "<table><tr><th>Posição</th><th>Nome</th><th>Total</th><th>Maior Peixe</th></tr>";
       data.ranking.forEach((c, i) => {
-        tabela += `<tr><td>${i+1}</td><td>${c.nome}</td><td>${c.total}</td><td>${c.maior_peixe}</td></tr>`;
+        let classe = "";
+        if (i === 0) classe = "gold";
+        else if (i === 1) classe = "silver";
+        else if (i === 2) classe = "bronze";
+
+        tabela += `<tr class="${classe}"><td>${i+1}</td><td>${c.nome}</td><td>${c.total}</td><td>${c.maior_peixe}</td></tr>`;
       });
       tabela += "</table>";
 
