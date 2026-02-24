@@ -6,7 +6,7 @@ Permite adicionar competidores, registrar os tamanhos dos peixes e gerar automat
 ---
 
 ## 🚀 Funcionalidades
-- Adicionar competidores com seus respectivos tamanhos de peixes.
+- Adicionar competidores, e adicionar 4 tamanhos de peixes.
 - Exibir lista de competidores adicionados.
 - Enviar dados para o backend e receber o resultado da competição.
 - Mostrar ranking em tabela estilizada com destaque para os três primeiros (ouro, prata e bronze).
